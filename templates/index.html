@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP to SQL Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NLP to SQL Translator</h1>
+    <label for="question">Enter your question:</label>
+    <input type="text" id="question" placeholder="e.g., Show me all orders from last month">
+
+    <button onclick="translateQuestion()">Translate</button>
+
+    <div class="result" id="result">
+        <h2>SQL Query:</h2>
+        <pre id="sql_query"></pre>
+        <h2>Result:</h2>
+        <pre id="query_result"></pre>
+    </div>
+
+    <script>
+        async function translateQuestion() {
+            const question = document.getElementById('question').value;
+            const response = await fetch('/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question })
+            });
+
+            const data = await response.json();
+            document.getElementById('sql_query').innerText = data.sql_query || 'Error: ' + data.error;
+            document.getElementById('query_result').innerText = JSON.stringify(data.result, null, 2) || 'Error: ' + data.error;
+        }
+    </script>
+</body>
+</html>
